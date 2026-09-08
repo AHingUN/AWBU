@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="前端工具箱 —— 收录 50 个精选实用站点，暗色沉浸式本地导航起始页" />
+<title>前端工具箱 · DevToolbox</title>
+<link rel="stylesheet" href="css/style.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c8cff'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%230a0a14'/%3E%3Cpath d='M12 10l-5 6 5 6M20 10l5 6-5 6' stroke='url(%23g)' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
+</head>
+<body oncontextmenu="return false">
+
+<!-- 登录遮罩层 -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="login-brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" width="28" height="28"><path d="M12 10l-5 6 5 6M20 10l5 6-5 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand-text">超级工具箱</span>
+    </div>
+    <p class="login-sub">请验证身份以解锁工具箱</p>
+    <div class="login-form">
+      <input type="password" id="loginPassword" placeholder="请输入密码" autocomplete="off" />
+      <button id="loginBtn">解锁</button>
+    </div>
+    <div id="loginError" class="login-error" hidden>密码错误，请重试</div>
+    <div class="login-hint">尊敬的用户，请输入正确密码</div>
+  </div>
+</div>
+
+<!-- 动态背景层 -->
+<canvas id="particle-canvas" aria-hidden="true"></canvas>
+<div class="aurora" aria-hidden="true">
+  <span class="aurora-blob b1"></span>
+  <span class="aurora-blob b2"></span>
+  <span class="aurora-blob b3"></span>
+</div>
+<div class="grid-mask" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge reveal">
+      <span class="dot-pulse"></span> 本地即开即用 · 无需安装 · 数据只存在你的浏览器
+    </div>
+    <h1 class="hero-title reveal">
+      <span class="gradient-text">你的随身前端工具箱</span>
+    </h1>
+    <p class="hero-sub reveal">把收藏夹里的高频站点，变成一张会呼吸的工作台</p>
+
+    <!-- 搜索 -->
+    <div class="search-shell reveal" id="searchShell">
+      <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="searchInput" type="text" placeholder="搜索 50 个站点，或输入关键词回车直接联网搜索…" autocomplete="off" spellcheck="false" />
+      <div class="engine-group" id="engineGroup">
+        <button class="engine active" data-engine="bing">Bing</button>
+        <button class="engine" data-engine="baidu">百度</button>
+        <button class="engine" data-engine="google">Google</button>
+      </div>
+      <kbd>/</kbd>
+    </div>
+
+    <!-- 统计 -->
+    <div class="stats reveal">
+      <div class="stat"><b data-count="50">0</b><span>精选站点</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><b data-count="11">0</b><span>分类</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><b data-count="0">0</b><span>外部依赖</span></div>
+    </div>
+  </section>
+
+  <!-- 分类胶囊栏 -->
+  <div class="cat-bar-wrap">
+    <nav class="cat-bar" id="catBar" aria-label="站点分类"></nav>
+  </div>
+
+  <!-- 内容区 -->
+  <div id="content"></div>
+
+  <!-- 空状态 -->
+  <div class="empty-state" id="emptyState" hidden>
+    <div class="empty-icon">
+      <svg viewBox="0 0 24 24" width="40" height="40"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 11h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
+    <p>没有找到匹配的站点</p>
+    <button class="primary-btn" id="emptySearchBtn">用当前引擎联网搜索「<span id="emptyQuery"></span>」</button>
+  </div>
+
+  <!-- ============================================================
+       作者介绍 · 高级重制版（极简·精致）
+       ============================================================ -->
+  <section class="author-section">
+    <div class="author-card">
+
+      <!-- 背景柔光 -->
+      <div class="author-ambient" aria-hidden="true"></div>
+
+      <!-- 头像区 -->
+      <div class="author-avatar" aria-hidden="true">
+  <div class="avatar-ring"></div>
+  <div class="avatar-inner avatar-photo-wrapper">
+    <img src="img/avatar.jpg" alt="作者头像" />
+  </div>
+</div>
+
+      <!-- 信息区 -->
+      <div class="author-info">
+        <div class="author-eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span>About</span>
+          <span class="eyebrow-sep">·</span>
+          <span>作者</span>
+        </div>
+
+        <h2 class="author-name">
+          <span class="gradient-text">HeChengZe</span>
+          <span class="author-role">前端学习者 / 编程新手</span>
+        </h2>
+
+        <div class="author-bio-wrapper">
+          <span class="bio-line" aria-hidden="true"></span>
+          <p class="author-bio">
+            大家好，我是这个网站的作者，首先感谢大家的使用。
+            这个工具箱从一整个收藏夹生长出来——<strong>后续会不断添加有用的工具</strong>、<strong>感谢大家喜欢</strong>
+            希望你们能天天开心，好好吃饭，好好睡觉，对自己好一点。
+          </p>
+        </div>
+
+        <div class="author-divider"></div>
+        <div class="author-skills">
+          <span class="skill-tag" style="--sk:#8b9bff">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            原生 JS
+          </span>
+          <span class="skill-tag" style="--sk:#22d3ee">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v18M16 3v18M3 8h18M3 16h18"/></svg>
+            联系作者
+          </span>
+          <span class="skill-tag" style="--sk:#e879f9">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.7 4.8L18.5 9.5 13.7 11.2 12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M19 14.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>
+            QQ
+          </span>
+          <span class="skill-tag" style="--sk:#fbbf24">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            2637840381
+          </span>
+          <span class="skill-tag" style="--sk:#34d399">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            暗色模式
+          </span>
+        </div>
+      </div>
+
+      <!-- 极简装饰符号（只保留两个，更克制） -->
+      <div class="author-deco" aria-hidden="true">
+        <span class="deco-symbol s1">✦</span>
+        <span class="deco-symbol s2">◈</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-line"></div>
+    <p>前端工具箱 · 纯 HTML / CSS / 原生 JS 构建 · 双击 index.html 即可运行</p>
+    <p class="footer-sub">站点数据来自你的浏览器收藏夹导出文件 · 访问记录仅保存在 localStorage</p>
+  </footer>
+</main>
+
+<!-- 返回顶部 -->
+<button class="back-top" id="backTop" title="返回顶部" aria-label="返回顶部">
+  <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
