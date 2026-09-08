@@ -120,7 +120,7 @@
       STORE.setMap(map);
     }
     if (!pwHash) {
-      const obfuscatedDefault = obfuscate('aaa', map);
+      const obfuscatedDefault = obfuscate('a', map);
       pwHash = deriveKey(obfuscatedDefault, SECRET_SALT);
       STORE.setPwHash(pwHash);
     }
